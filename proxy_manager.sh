@@ -46,7 +46,9 @@ function show_proxies {
     echo "-------------------------------------------------------------------------------"
     index=1
     while IFS=':' read -r ip port username password protocol || [[ -n $ip ]]; do
-    
+        if [ -z "$ip" ]; then
+            break
+        fi
         printf " %-6s| %-18s| %-5s| %-15s| %-15s| %s\n" "$index" "$ip" "$port" "$username" "$password" "$protocol"
         ((index++))
     done < "$PROXY_LIST"
