@@ -23,7 +23,7 @@ function set_proxy_config {
 }
 
 function process_set_proxy_config {
-    read -p "Enter proxy index to set configuration: " index
+    read -p "Enter proxy index to set configuration (index): " index
     proxy=$(sed -n "${index}p" "$PROXY_LIST")
     if [[ -n "$proxy" ]]; then
         IFS=':' read -r ip port username password protocol <<< "$proxy"
@@ -111,15 +111,35 @@ function manage_redsocks {
     echo "1. Start Service"
     echo "2. Stop Service"
     echo "3. Restart Service"
+    echo "4. Get Service"
+    echo "5. Update Service"
     echo "e. Quit"
     read -p "Enter your choice: " choice
     case $choice in
         1) plink  -ssh -l $USER -pw $PASS $HOST -no-antispoof  -P $PORT service redsocks start  ;;
         2) plink  -ssh -l $USER -pw $PASS $HOST -no-antispoof  -P $PORT service redsocks stop   ;;
         3) plink  -ssh -l $USER -pw $PASS $HOST -no-antispoof  -P $PORT service redsocks restart ;;
+        4) get_redsocks ;;
+        5) update_redsocks ;;
         e) echo "Exiting."; break ;;
         *) echo "Invalid choice. Please select again." ;;
     esac
+}
+function get_redsocks {
+
+    echo "Downloading"
+    pscp -scp  -pw $PASS -P $PORT $USER@$HOST:/etc/init.d/redsocks $REDSOCKS
+    echo "done"
+
+}
+function update_redsocks {
+
+    echo "Uploading"
+    pscp -scp  -pw $PASS -P $PORT $REDSOCKS $USER@$HOST:/etc/init.d/redsocks 
+    echo "done"
+    plink  -ssh -l $USER -pw $PASS $HOST -no-antispoof  -P $PORT service redsocks stop 
+    plink  -ssh -l $USER -pw $PASS $HOST -no-antispoof  -P $PORT service redsocks start 
+
 }
 echo "Proxy Manager"
 
