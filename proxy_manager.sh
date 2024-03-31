@@ -1,12 +1,6 @@
 #!/bin/bash
-
-PROXY_LIST="proxy_list.txt"
-CONFIG_FILE="redsocks.conf"
-HOST=192.168.1.1
-USER="root"
-PASS="gksumu121"
-PORT=22
-
+# Source the config file
+source config.sh
 
 # Function to set proxy configuration in redsocks.conf
 function set_proxy_config {
