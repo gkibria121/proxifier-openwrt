@@ -68,7 +68,14 @@ function add_proxy {
     read -sp "Enter proxy password: " password
     echo
     read -p "Enter proxy protocol: " protocol
-    echo "$ip:$port:$username:$password:$protocol" >> "$PROXY_LIST"
+    # Check if all inputs are valid
+    if [[ -n $ip && -n $port && -n $protocol ]]; then
+        # If all inputs are valid, insert into the proxy list
+        echo "$ip:$port:$username:$password:$protocol" >> "$PROXY_LIST"
+        echo "Proxy added successfully."
+    else
+        echo "Invalid input. Please provide valid values for IP, port, and protocol."
+    fi
     echo "Proxy added successfully."
 }
 
@@ -106,6 +113,20 @@ function show_current_ip {
    echo "My public IP address is: $current_ip"
 
 }
+function manage_redsocks {
+    echo "1. Start Service"
+    echo "2. Stop Service"
+    echo "3. Restart Service"
+    echo "e. Quit"
+    read -p "Enter your choice: " choice
+    case $choice in
+        1) plink  -ssh -l $USER -pw $PASS $HOST -no-antispoof  -P $PORT service redsocks start  ;;
+        2) plink  -ssh -l $USER -pw $PASS $HOST -no-antispoof  -P $PORT service redsocks stop   ;;
+        3) plink  -ssh -l $USER -pw $PASS $HOST -no-antispoof  -P $PORT service redsocks restart ;;
+        e) echo "Exiting."; break ;;
+        *) echo "Invalid choice. Please select again." ;;
+    esac
+}
 echo "Proxy Manager"
 
 while true; do
@@ -114,7 +135,8 @@ while true; do
     echo "2. Add Proxy"
     echo "3. Remove Proxy"
     echo "4. Set Proxy Configuration"
-    echo "5. Quit"
+    echo "5. Manage Service"
+    echo "e. Quit"
     read -p "Enter your choice: " choice
     clear
 
@@ -124,7 +146,8 @@ while true; do
         2) add_proxy ;;
         3) remove_proxy ;;
         4) process_set_proxy_config ;;
-        5) echo "Exiting."; break ;;
+        5) manage_redsocks ;;
+        e) echo "Exiting."; break ;;
         *) echo "Invalid choice. Please select again." ;;
     esac
     
