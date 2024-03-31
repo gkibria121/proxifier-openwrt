@@ -27,7 +27,7 @@ iptable_start() {
 
     iptables -t nat -A PREROUTING -i ${INTERFACE} -p tcp -j REDSOCKS
 
-    iptables -A INPUT -i br-lan -p tcp --dport ${PORT} -j ACCEPT
+    iptables -A INPUT i ${INTERFACE} -p tcp --dport ${PORT} -j ACCEPT
 
     /bin/echo " done"
 }
