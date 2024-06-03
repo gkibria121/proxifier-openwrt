@@ -23,6 +23,7 @@ function set_proxy_config {
 }
 
 function process_set_proxy_config {
+    show_proxies
     read -p "Enter proxy index to set configuration (index): " index
     proxy=$(sed -n "${index}p" "$PROXY_LIST")
     if [[ -n "$proxy" ]]; then
@@ -75,13 +76,19 @@ function add_proxy {
 
 function remove_proxy {
     read -p "Enter proxy index to remove (index): " index
-    proxy=$(sed -n "${index}p" "$PROXY_LIST")
-    if [[ -n "$proxy" ]]; then
-        sed -i "${index}d" "$PROXY_LIST"
-        echo "Proxy removed successfully."
+
+    if [[ -n "$index" ]]; then
+        proxy=$(sed -n "${index}p" "$PROXY_LIST")
+        if [[ -n "$proxy" ]]; then
+            sed -i "${index}d" "$PROXY_LIST"
+            echo "Proxy removed successfully."
+        else
+            echo "Proxy not found in the list."
+        fi
     else
-        echo "Proxy not found in the list."
+        echo "Index is empty. Ignoring."
     fi
+
 }
 function process_server {
     echo "Downloading"
@@ -121,7 +128,7 @@ function manage_redsocks {
         3) plink  -ssh -l $USER -pw $PASS $HOST -no-antispoof  -P $PORT service redsocks restart ;;
         4) get_redsocks ;;
         5) update_redsocks ;;
-        e) echo "Exiting."; break ;;
+        e) echo "Exiting." ; clear ;;
         *) echo "Invalid choice. Please select again." ;;
     esac
 }
