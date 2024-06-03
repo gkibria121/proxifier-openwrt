@@ -148,6 +148,12 @@ function update_redsocks {
     plink  -ssh -l $USER -pw $PASS $HOST -no-antispoof  -P $PORT service redsocks start 
 
 }
+function test_internet_speed {
+    ./speedtest.exe
+
+}
+
+
 echo "Proxy Manager"
 
 while true; do
@@ -157,6 +163,7 @@ while true; do
     echo "3. Remove Proxy"
     echo "4. Set Proxy Configuration"
     echo "5. Manage Service"
+    echo "6. Test Internet Speed"
     echo "e. Quit"
     read -p "Enter your choice: " choice
     clear
@@ -168,6 +175,7 @@ while true; do
         3) remove_proxy ;;
         4) process_set_proxy_config ;;
         5) manage_redsocks ;;
+        6) test_internet_speed ;;
         e) echo "Exiting."; break ;;
         *) echo "Invalid choice. Please select again." ;;
     esac
